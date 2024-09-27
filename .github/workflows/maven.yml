@@ -46,7 +46,7 @@ jobs:
 
       # 执行 SQL 文件
       - name: Execute SQL file
-        run: mysql -u root -p$MYSQL_ROOT_PASSWORD my_db < sql/create_tables.sql
+        run: mysql -u root -p$MYSQL_ROOT_PASSWORD my_db < sql/create_table.sql
         env:
           MYSQL_ROOT_PASSWORD: '123456'  # 这里是你的 root 密码
 
