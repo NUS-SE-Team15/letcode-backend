@@ -36,27 +36,24 @@ jobs:
       - name: Shutdown Ubuntu MySQL (SUDO)
         run: sudo service mysql stop
 
-      # 设置自定义 MySQL 实例
+      # 设置自定义 MySQL 实例，绑定到 127.0.0.1
       - name: Set up MySQL
         uses: mirromutth/mysql-action@v1.1
         with:
           mysql version: '8.0'            # MySQL 版本
           mysql root password: '123456'   # 设置 root 用户密码
           mysql database: 'my_db'         # 数据库名称
-
-      # 设置 MYSQL_PWD 环境变量，避免命令行传递密码
-      - name: Set MYSQL_PWD environment variable
-        run: echo "MYSQL_PWD=$MYSQL_ROOT_PASSWORD" >> $GITHUB_ENV
-        env:
-          MYSQL_ROOT_PASSWORD: '123456'
+          args: "--bind-address=127.0.0.1"
 
       # 检查 MySQL 服务是否启动成功
       - name: Check MySQL service status
-        run: mysqladmin -u root ping
+        run: mysqladmin -h 127.0.0.1 -u root ping
+        env:
+          MYSQL_ROOT_PASSWORD: '123456'
 
       # 执行 SQL 文件
       - name: Execute SQL file
-        run: mysql -u root my_db < ${{ github.workspace }}/sql/create_tables.sql
+        run: mysql -h 127.0.0.1 -u root -p$MYSQL_ROOT_PASSWORD my_db < ${{ github.workspace }}/sql/create_tables.sql
         env:
           MYSQL_ROOT_PASSWORD: '123456'
 
