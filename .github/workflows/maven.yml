@@ -2,7 +2,6 @@ name: Java CI with Maven and MySQL Setup
 
 on:
   push:
-    workflow_dispatch:
     branches:
       - "main"
       - "lwj_user_auth"
@@ -16,7 +15,10 @@ on:
       - "whq"
       - "yxr"
       - "zry"
-
+defaults:
+  run:
+    shell: bash
+    working-directory: .
 jobs:
   build:
     runs-on: ubuntu-latest
