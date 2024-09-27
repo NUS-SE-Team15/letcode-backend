@@ -22,7 +22,7 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4  # 检出代码
+        uses: actions/checkout@v4
 
       # 设置 JDK 8 环境
       - name: Set up JDK 8
@@ -32,10 +32,6 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      # 关闭默认的 MySQL 服务
-      - name: Shutdown Ubuntu MySQL (SUDO)
-        run: sudo service mysql stop
-
       # 设置 MySQL 实例
       - name: Set up MySQL
         uses: mirromutth/mysql-action@v1.1
@@ -44,27 +40,20 @@ jobs:
           mysql root password: '123456'
           mysql database: 'my_db'
 
+      # 设置 MYSQL_PWD 环境变量
+      - name: Set MYSQL_PWD environment variable
+        run: echo "MYSQL_PWD=$MYSQL_ROOT_PASSWORD" >> $GITHUB_ENV
+        env:
+          MYSQL_ROOT_PASSWORD: '123456'
 
       # 等待 MySQL 启动
       - name: Wait for MySQL to start
-        run: sleep 1
-
-      # 检查 MySQL 服务是否启动成功
-      - name: Check MySQL service status
-        run: mysqladmin -h 127.0.0.1 -u root -p$MYSQL_ROOT_PASSWORD ping
-        env:
-          MYSQL_ROOT_PASSWORD: '123456'
+        run: sleep 2
 
       # 执行 SQL 文件
       - name: Execute SQL file
-        run: mysql -h 127.0.0.1 -u root -p$MYSQL_ROOT_PASSWORD my_db < ${{ github.workspace }}/sql/create_table.sql
-        env:
-          MYSQL_ROOT_PASSWORD: '123456'
+        run: mysql -h 127.0.0.1 -u root my_db < ${{ github.workspace }}/sql/create_tables.sql
 
       # 使用 Maven 构建项目
       - name: Build with Maven
         run: mvn -B package --file pom.xml
-
-      # 可选：提交 Maven 依赖图
-      - name: Update dependency graph
-        uses: advanced-security/maven-dependency-submission-action@571e99aab1055c2e71a1e2309b9691de18d6b7d6
