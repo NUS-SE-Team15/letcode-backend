@@ -5,9 +5,19 @@ name: Java CI with Maven
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - "main"
+      - "lwj_user_auth"
+      - "whq"
+      - "yxr"
+      - "zry"
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - "main"
+      - "lwj_user_auth"
+      - "whq"
+      - "yxr"
+      - "zry"
 
 jobs:
   build:
