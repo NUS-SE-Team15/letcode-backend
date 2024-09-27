@@ -44,9 +44,6 @@ jobs:
           mysql root password: '123456'
           mysql database: 'my_db'
 
-      # 确保 MySQL 服务已启动
-      - name: Start MySQL service
-        run: sudo service mysql start
 
       # 等待 MySQL 启动
       - name: Wait for MySQL to start
