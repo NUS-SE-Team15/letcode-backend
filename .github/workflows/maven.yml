@@ -22,7 +22,11 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4  # 检出代码
+
+      # 关闭默认的 MySQL 服务（如果存在）
+      - name: Shutdown system MySQL service (if running)
+        run: sudo service mysql stop
 
       # 设置 JDK 8 环境
       - name: Set up JDK 8
@@ -32,27 +36,33 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      # 设置 MySQL 实例
+      # 设置 MySQL 实例，确保端口映射正确
       - name: Set up MySQL
         uses: mirromutth/mysql-action@v1.1
         with:
           mysql version: '8.0'
-          mysql root password: '123456'
+          mysql root password: '123456'    # 使用提供的 MySQL root 密码
           mysql database: 'my_db'
+          host port: 3306                  # 映射主机端口
+          container port: 3306             # 容器内的 MySQL 端口
 
-      # 设置 MYSQL_PWD 环境变量
+      # 增加等待时间，确保 MySQL 启动
+      - name: Wait for MySQL to start
+        run: sleep 20
+
+      # 设置 MYSQL_PWD 环境变量，避免命令行传递密码
       - name: Set MYSQL_PWD environment variable
         run: echo "MYSQL_PWD=$MYSQL_ROOT_PASSWORD" >> $GITHUB_ENV
         env:
-          MYSQL_ROOT_PASSWORD: '123456'
+          MYSQL_ROOT_PASSWORD: '123456'    # 使用提供的 MySQL root 密码
 
-      # 等待 MySQL 启动
-      - name: Wait for MySQL to start
-        run: sleep 2
+      # 检查 MySQL 服务状态
+      - name: Check MySQL service status
+        run: mysqladmin -h 127.0.0.1 -u root ping
 
       # 执行 SQL 文件
       - name: Execute SQL file
-        run: mysql -h 127.0.0.1 -u root my_db < ${{ github.workspace }}/sql/create_table.sql
+        run: mysql -h 127.0.0.1 -u root my_db < ${{ github.workspace }}/sql/create_tables.sql
 
       # 使用 Maven 构建项目
       - name: Build with Maven
