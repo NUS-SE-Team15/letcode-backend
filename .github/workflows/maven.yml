@@ -2,6 +2,7 @@ name: Java CI with Maven and MySQL Setup
 
 on:
   push:
+    workflow_dispatch:
     branches:
       - "main"
       - "lwj_user_auth"
