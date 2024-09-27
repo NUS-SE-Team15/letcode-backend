@@ -52,7 +52,7 @@ jobs:
 
       # 执行 SQL 文件
       - name: Execute SQL file
-        run: mysql -h 127.0.0.1 -u root my_db < ${{ github.workspace }}/sql/create_tables.sql
+        run: mysql -h 127.0.0.1 -u root my_db < ${{ github.workspace }}/sql/create_table.sql
 
       # 使用 Maven 构建项目
       - name: Build with Maven
