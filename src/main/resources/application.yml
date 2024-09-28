@@ -1,6 +1,15 @@
 # 公共配置文件
 # @author <a href="https://github.com/liyupi">程序员鱼皮</a>
 # @from <a href="https://yupi.icu">编程导航知识星球</a>
+#ssh:
+#  host: 43.134.114.17
+#  port: 22
+#  username: root
+#  privateKeyPath: TEAM15.pem
+#  localPort: 3306
+#  remoteHost: 127.0.0.1
+#  remotePort: 3306
+
 spring:
   application:
     name: letcode
@@ -19,11 +28,16 @@ spring:
     timeout: 2592000
   # 数据库配置
   # todo 需替换配置
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/information_schema
+#    username: root
+#    password: MysqlPassword15@
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/my_db
     username: root
-    password: 123456
+    password: 20020810WHQwhq
   # Redis 配置
   # todo 需替换配置，然后取消注释
 #  redis:
