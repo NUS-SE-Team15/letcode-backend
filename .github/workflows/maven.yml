@@ -71,13 +71,19 @@ jobs:
       - name: Execute SQL file
         run: mysql -h 127.0.0.1 -u root my_db < ${{ github.workspace }}/sql/create_table.sql
 
+      # 确保 Maven Wrapper 有执行权限
+      - name: Add execution permissions for Maven wrapper
+        run: chmod +x ./mvnw
+
       # 使用 Maven 构建项目
       - name: Build with Maven
-        run: mvn -B package --file pom.xml
+        run: ./mvnw -B package --file pom.xml
 
       # 使用 Snyk 检查依赖漏洞
       - name: Run Snyk to check for vulnerabilities
         uses: snyk/actions/maven@master
         continue-on-error: true  # 即使 Snyk 检查失败，仍继续执行后续步骤
+        with:
+          args: test  # 指定 Snyk 运行命令
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}  # 从 GitHub Secrets 中获取 Snyk API Token
