@@ -2,8 +2,8 @@
 <!-- @author <a href="https://github.com/liyupi">程序员鱼皮</a> -->
 <!-- @from <a href="https://yupi.icu">编程导航知识星球</a> -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -11,17 +11,19 @@
         <version>2.7.2</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+
+    <!-- 合并后的 <properties> 标签 -->
     <properties>
         <sonar.organization>nus-se-team15</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <java.version>1.8</java.version>
     </properties>
+
     <groupId>com.team15</groupId>
     <artifactId>letcode</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>letcode</name>
-    <properties>
-        <java.version>1.8</java.version>
-    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
