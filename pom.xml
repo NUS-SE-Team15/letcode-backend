@@ -40,7 +40,7 @@
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>3.5.2</version>
+            <version>3.5.3.1</version>
         </dependency>
         <!-- redis -->
         <dependency>
@@ -60,7 +60,7 @@
         <dependency>
             <groupId>com.github.binarywang</groupId>
             <artifactId>wx-java-mp-spring-boot-starter</artifactId>
-            <version>4.4.0</version>
+            <version>4.5.2.B</version>
         </dependency>
         <!-- https://doc.xiaominfo.com/docs/quick-start#openapi2 -->
         <dependency>
@@ -72,7 +72,7 @@
         <dependency>
             <groupId>com.qcloud</groupId>
             <artifactId>cos_api</artifactId>
-            <version>5.6.89</version>
+            <version>5.6.137</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
         <dependency>
@@ -83,13 +83,13 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>easyexcel</artifactId>
-            <version>3.1.1</version>
+            <version>4.0.0</version>
         </dependency>
         <!-- https://hutool.cn/docs/index.html#/-->
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
-            <version>5.8.8</version>
+            <version>5.8.12</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
