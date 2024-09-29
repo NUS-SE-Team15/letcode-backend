@@ -1,4 +1,4 @@
-name: Java CI with Maven and MySQL Setup
+name: Java CI with Maven, MySQL Setup, and Snyk Check
 
 on:
   push:
@@ -17,10 +17,12 @@ on:
       - "yxr"
       - "zry"
       - "CICD-PIPELINE"
+
 defaults:
   run:
     shell: bash
     working-directory: .
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -72,3 +74,10 @@ jobs:
       # 使用 Maven 构建项目
       - name: Build with Maven
         run: mvn -B package --file pom.xml
+
+      # 使用 Snyk 检查依赖漏洞
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/maven@master
+        continue-on-error: true  # 即使 Snyk 检查失败，仍继续执行后续步骤
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}  # 从 GitHub Secrets 中获取 Snyk API Token
