@@ -13,13 +13,15 @@ on:
         - "whq"
         - "yxr"
         - "zry"
-  pull_request:
-    branches:
+        - "CICD-PIPELINE"
+    pull_request:
+      branches:
         - "main"
         - "lwj_user_auth"
         - "whq"
         - "yxr"
         - "zry"
+        - "CICD-PIPELINE"
 
 jobs:
   analyze:
