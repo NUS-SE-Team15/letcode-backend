@@ -1,0 +1,39 @@
+name: Snyk Security Check
+
+on:
+  push:
+    branches:
+      - "main"
+      - "lwj_user_auth"
+      - "whq"
+      - "yxr"
+      - "zry"
+      - "CICD-PIPELINE"
+  pull_request:
+    branches:
+      - "main"
+      - "lwj_user_auth"
+      - "whq"
+      - "yxr"
+      - "zry"
+      - "CICD-PIPELINE"
+
+jobs:
+  snyk:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4  # 拉取代码
+
+      - name: Set up JDK 8
+        uses: actions/setup-java@v3
+        with:
+          java-version: '8'
+          distribution: 'temurin'
+
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/maven@master
+        continue-on-error: true  # 即使 Snyk 检查失败，仍继续后续步骤
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}  # 从 GitHub Secrets 中获取 Snyk API Token
