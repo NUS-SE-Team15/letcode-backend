@@ -11,6 +11,10 @@
         <version>2.7.2</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+    <properties>
+        <sonar.organization>nus-se-team15</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+    </properties>
     <groupId>com.team15</groupId>
     <artifactId>letcode</artifactId>
     <version>0.0.1-SNAPSHOT</version>
