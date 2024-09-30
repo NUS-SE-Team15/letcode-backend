@@ -4,18 +4,10 @@ on:
   push:
     branches:
       - "main"
-      - "lwj_user_auth"
-      - "whq"
-      - "yxr"
-      - "zry"
       - "CICD-PIPELINE"
   pull_request:
     branches:
       - "main"
-      - "lwj_user_auth"
-      - "whq"
-      - "yxr"
-      - "zry"
       - "CICD-PIPELINE"
 
 defaults:
