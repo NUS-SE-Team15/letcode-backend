@@ -9,10 +9,6 @@ import org.springframework.beans.BeanUtils;
 import java.io.Serializable;
 import java.util.Date;
 
-/**
- * 题目提交封装类
- * @TableName question
- */
 @Data
 public class QuestionSubmitVO implements Serializable {
     /**

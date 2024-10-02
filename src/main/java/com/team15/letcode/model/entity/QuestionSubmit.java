@@ -6,10 +6,6 @@ import lombok.Data;
 import java.io.Serializable;
 import java.util.Date;
 
-/**
- * 题目提交
- * @TableName question_submit
- */
 @TableName(value ="question_submit")
 @Data
 public class QuestionSubmit implements Serializable {

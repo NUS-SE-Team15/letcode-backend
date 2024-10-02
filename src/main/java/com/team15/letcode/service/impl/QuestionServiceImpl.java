@@ -27,11 +27,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/**
-* @author 李鱼皮
-* @description 针对表【question(题目)】的数据库操作Service实现
-* @createDate 2023-08-07 20:58:00
-*/
 @Service
 public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
     implements QuestionService{
@@ -40,11 +35,6 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
     @Resource
     private UserService userService;
 
-    /**
-     * 校验题目是否合法
-     * @param question
-     * @param add
-     */
     @Override
     public void validQuestion(Question question, boolean add) {
         if (question == null) {
@@ -78,12 +68,6 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
         }
     }
 
-    /**
-     * 获取查询包装类（用户根据哪些字段查询，根据前端传来的请求对象，得到 mybatis 框架支持的查询 QueryWrapper 类）
-     *
-     * @param questionQueryRequest
-     * @return
-     */
     @Override
     public QueryWrapper<Question> getQueryWrapper(QuestionQueryRequest questionQueryRequest) {
         QueryWrapper<Question> queryWrapper = new QueryWrapper<>();
