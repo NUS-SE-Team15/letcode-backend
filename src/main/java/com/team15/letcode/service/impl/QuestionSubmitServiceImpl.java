@@ -119,10 +119,5 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
         questionSubmitVOPage.setRecords(questionSubmitVOList);
         return questionSubmitVOPage;
     }
-
-
 }
-
-
-
 
