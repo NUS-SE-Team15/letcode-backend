@@ -2,6 +2,7 @@ package com.team15.letcode.controller;
 
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.google.gson.Gson;
 import com.team15.letcode.annotation.AuthCheck;
 import com.team15.letcode.common.BaseResponse;
 import com.team15.letcode.common.DeleteRequest;
@@ -30,12 +31,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * 帖子接口
- *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
- */
+
 @RestController
 @RequestMapping("/post")
 @Slf4j
@@ -46,6 +42,8 @@ public class PostController {
 
     @Resource
     private UserService userService;
+
+    private final static Gson GSON = new Gson();
 
     // region 增删改查
 
@@ -65,7 +63,7 @@ public class PostController {
         BeanUtils.copyProperties(postAddRequest, post);
         List<String> tags = postAddRequest.getTags();
         if (tags != null) {
-            post.setTags(JSONUtil.toJsonStr(tags));
+            post.setTags(GSON.toJson(tags));
         }
         postService.validPost(post, true);
         User loginUser = userService.getLoginUser(request);
@@ -119,7 +117,7 @@ public class PostController {
         BeanUtils.copyProperties(postUpdateRequest, post);
         List<String> tags = postUpdateRequest.getTags();
         if (tags != null) {
-            post.setTags(JSONUtil.toJsonStr(tags));
+            post.setTags(GSON.toJson(tags));
         }
         // 参数校验
         postService.validPost(post, false);
