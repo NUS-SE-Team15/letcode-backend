@@ -27,12 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * 题目接口
- *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
- */
+
 @RestController
 @RequestMapping("/question")
 @Slf4j
@@ -48,13 +43,6 @@ public class QuestionController {
 
     // region 增删改查
 
-    /**
-     * 创建
-     *
-     * @param questionAddRequest
-     * @param request
-     * @return
-     */
     @PostMapping("/add")
     public BaseResponse<Long> addQuestion(@RequestBody QuestionAddRequest questionAddRequest, HttpServletRequest request) {
         if (questionAddRequest == null) {
@@ -85,13 +73,6 @@ public class QuestionController {
         return ResultUtils.success(newQuestionId);
     }
 
-    /**
-     * 删除
-     *
-     * @param deleteRequest
-     * @param request
-     * @return
-     */
     @PostMapping("/delete")
     public BaseResponse<Boolean> deleteQuestion(@RequestBody DeleteRequest deleteRequest, HttpServletRequest request) {
         if (deleteRequest == null || deleteRequest.getId() <= 0) {
@@ -110,12 +91,6 @@ public class QuestionController {
         return ResultUtils.success(b);
     }
 
-    /**
-     * 更新（仅管理员）
-     *
-     * @param questionUpdateRequest
-     * @return
-     */
     @PostMapping("/update")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     public BaseResponse<Boolean> updateQuestion(@RequestBody QuestionUpdateRequest questionUpdateRequest) {
@@ -146,12 +121,6 @@ public class QuestionController {
         return ResultUtils.success(result);
     }
 
-    /**
-     * 根据 id 获取
-     *
-     * @param id
-     * @return
-     */
     @GetMapping("/get")
     public BaseResponse<Question> getQuestionById(long id, HttpServletRequest request) {
         if (id <= 0) {
@@ -169,12 +138,6 @@ public class QuestionController {
         return ResultUtils.success(question);
     }
 
-    /**
-     * 根据 id 获取（脱敏）
-     *
-     * @param id
-     * @return
-     */
     @GetMapping("/get/vo")
     public BaseResponse<QuestionVO> getQuestionVOById(long id, HttpServletRequest request) {
         if (id <= 0) {
@@ -187,13 +150,6 @@ public class QuestionController {
         return ResultUtils.success(questionService.getQuestionVO(question, request));
     }
 
-    /**
-     * 分页获取列表（封装类）
-     *
-     * @param questionQueryRequest
-     * @param request
-     * @return
-     */
     @PostMapping("/list/page/vo")
     public BaseResponse<Page<QuestionVO>> listQuestionVOByPage(@RequestBody QuestionQueryRequest questionQueryRequest,
                                                                HttpServletRequest request) {
@@ -206,13 +162,6 @@ public class QuestionController {
         return ResultUtils.success(questionService.getQuestionVOPage(questionPage, request));
     }
 
-    /**
-     * 分页获取当前用户创建的资源列表
-     *
-     * @param questionQueryRequest
-     * @param request
-     * @return
-     */
     @PostMapping("/my/list/page/vo")
     public BaseResponse<Page<QuestionVO>> listMyQuestionVOByPage(@RequestBody QuestionQueryRequest questionQueryRequest,
                                                                  HttpServletRequest request) {
@@ -230,13 +179,6 @@ public class QuestionController {
         return ResultUtils.success(questionService.getQuestionVOPage(questionPage, request));
     }
 
-    /**
-     * 分页获取题目列表（仅管理员）
-     *
-     * @param questionQueryRequest
-     * @param request
-     * @return
-     */
     @PostMapping("/list/page")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     public BaseResponse<Page<Question>> listQuestionByPage(@RequestBody QuestionQueryRequest questionQueryRequest,
@@ -250,13 +192,6 @@ public class QuestionController {
 
     // endregion
 
-    /**
-     * 编辑（用户）
-     *
-     * @param questionEditRequest
-     * @param request
-     * @return
-     */
     @PostMapping("/edit")
     public BaseResponse<Boolean> editQuestion(@RequestBody QuestionEditRequest questionEditRequest, HttpServletRequest request) {
         if (questionEditRequest == null || questionEditRequest.getId() <= 0) {

@@ -6,12 +6,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * 题目提交枚举
- *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
- */
 public enum QuestionSubmitStatusEnum {
 
     // 0 - 待判题、1 - 判题中、2 - 成功、3 - 失败
