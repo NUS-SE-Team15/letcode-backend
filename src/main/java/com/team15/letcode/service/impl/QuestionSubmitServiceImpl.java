@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.team15.letcode.common.ErrorCode;
 import com.team15.letcode.constant.CommonConstant;
 import com.team15.letcode.exception.BusinessException;
+import com.team15.letcode.judge.JudgeService;
 import com.team15.letcode.mapper.QuestionSubmitMapper;
 import com.team15.letcode.model.dto.questionsubmit.QuestionSubmitAddRequest;
 import com.team15.letcode.model.dto.questionsubmit.QuestionSubmitQueryRequest;
@@ -22,12 +23,19 @@ import com.team15.letcode.utils.SqlUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+/**
+* @author 李鱼皮
+* @description 针对表【question_submit(题目提交)】的数据库操作Service实现
+* @createDate 2023-08-07 20:58:53
+*/
 @Service
 public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper, QuestionSubmit>
     implements QuestionSubmitService{
@@ -38,6 +46,16 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
     @Resource
     private UserService userService;
 
+    @Resource
+    @Lazy
+    private JudgeService judgeService;
+    /**
+     * 提交题目
+     *
+     * @param questionSubmitAddRequest
+     * @param loginUser
+     * @return
+     */
     @Override
     public long doQuestionSubmit(QuestionSubmitAddRequest questionSubmitAddRequest, User loginUser) {
         // 校验编程语言是否合法
@@ -67,9 +85,20 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
         if (!save){
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "数据插入失败");
         }
-        return questionSubmit.getId();
+        Long questionSubmitId = questionSubmit.getId();
+        CompletableFuture.runAsync(() -> {
+            judgeService.doJudge(questionSubmitId);
+        });
+        return questionSubmitId;
     }
 
+
+    /**
+     * 获取查询包装类（用户根据哪些字段查询，根据前端传来的请求对象，得到 mybatis 框架支持的查询 QueryWrapper 类）
+     *
+     * @param questionSubmitQueryRequest
+     * @return
+     */
     @Override
     public QueryWrapper<QuestionSubmit> getQueryWrapper(QuestionSubmitQueryRequest questionSubmitQueryRequest) {
         QueryWrapper<QuestionSubmit> queryWrapper = new QueryWrapper<>();
@@ -119,5 +148,10 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
         questionSubmitVOPage.setRecords(questionSubmitVOList);
         return questionSubmitVOPage;
     }
+
+
 }
+
+
+
 
