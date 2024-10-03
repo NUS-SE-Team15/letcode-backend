@@ -47,7 +47,7 @@ jobs:
         with:
           mysql version: '8.0'
           mysql root password: '123456'    # 使用提供的 MySQL root 密码
-          mysql database: 'my_db'
+          mysql database: 'letcode'
           host port: 3306                  # 映射主机端口
           container port: 3306             # 容器内的 MySQL 端口
 
@@ -67,7 +67,7 @@ jobs:
 
       # 执行 SQL 文件
       - name: Execute SQL file
-        run: mysql -h 127.0.0.1 -u root my_db < ${{ github.workspace }}/sql/create_table.sql
+        run: mysql -h 127.0.0.1 -u root letcode < ${{ github.workspace }}/sql/create_table.sql
 
       # 确保 Maven Wrapper 有执行权限
       - name: Add execution permissions for Maven wrapper
