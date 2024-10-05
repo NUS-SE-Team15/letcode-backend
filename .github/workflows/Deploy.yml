@@ -1,0 +1,84 @@
+name: Deploy to EC2 via CodeDeploy
+
+on:
+  push:
+    branches:
+      - "main"  # 可以替换为您需要触发的分支
+      - "CICD-PIPELINE"
+  workflow_dispatch:
+
+jobs:
+  upload-to-s3:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 8
+        uses: actions/setup-java@v1
+        with:
+          java-version: '8'
+
+      # 关闭默认的 MySQL 服务（如果存在）
+      - name: Shutdown system MySQL service (if running)
+        run: sudo service mysql stop
+
+      # 设置 MySQL 实例，确保端口映射正确
+      - name: Set up MySQL
+        uses: mirromutth/mysql-action@v1.1
+        with:
+          mysql version: '8.0'
+          mysql root password: '123456'    # 使用提供的 MySQL root 密码
+          mysql database: 'letcode'
+          host port: 3306                  # 映射主机端口
+          container port: 3306             # 容器内的 MySQL 端口
+
+      # 增加等待时间，确保 MySQL 启动
+      - name: Wait for MySQL to start
+        run: sleep 10
+
+      # 设置 MYSQL_PWD 环境变量，避免命令行传递密码
+      - name: Set MYSQL_PWD environment variable
+        run: echo "MYSQL_PWD=$MYSQL_ROOT_PASSWORD" >> $GITHUB_ENV
+        env:
+          MYSQL_ROOT_PASSWORD: '123456'    # 使用提供的 MySQL root 密码
+
+      # 检查 MySQL 服务状态
+      - name: Check MySQL service status
+        run: mysqladmin -h 127.0.0.1 -u root ping
+
+      # 执行 SQL 文件
+      - name: Execute SQL file
+        run: mysql -h 127.0.0.1 -u root letcode < ${{ github.workspace }}/sql/create_table.sql
+
+      - name: Build with Maven
+        run: mvn clean package
+
+      - name: Zip artifacts
+        run: zip -r LetCode.zip target/ appspec.yml scripts/
+
+      - name: Upload to S3
+        run: aws s3 cp LetCode.zip s3://letcodefrontend/LetCode.zip
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ap-southeast-1  # 将区域更新为新加坡
+
+
+  deploy:
+    needs: upload-to-s3  # 部署作业依赖于 upload-to-s3 完成
+    runs-on: ubuntu-latest
+    environment: production  # 设置GitHub Action的环境为 production
+
+    steps:
+      - name: Deploy to EC2 via CodeDeploy
+        run: |
+          aws deploy create-deployment \
+            --application-name LetCode \
+            --deployment-group-name LetCodeBackEndServers \
+            --s3-location bucket=letcodefrontend,bundleType=zip,key=LetCode.zip
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ap-southeast-1  # 将区域更新为新加坡
