@@ -76,7 +76,7 @@ jobs:
         run: |
           aws deploy create-deployment \
             --application-name LetCode \
-            --deployment-group-name LetCodeBackEndServ \
+            --deployment-group-name LetCodeBackEndServers \
             --s3-location bucket=letcodefrontend,bundleType=zip,key=LetCode.zip
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
