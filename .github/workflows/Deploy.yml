@@ -56,7 +56,7 @@ jobs:
         run: mvn clean package
 
       - name: Zip artifacts
-        run: zip -r LetCode.zip target/ AppSpec.yml scripts/
+        run: zip -r LetCode.zip target/ appspec.yml scripts/
 
       - name: Upload to S3
         run: aws s3 cp LetCode.zip s3://letcodefrontend/LetCode.zip
