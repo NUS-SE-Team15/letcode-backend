@@ -66,3 +66,19 @@ jobs:
           AWS_REGION: ap-southeast-1  # 将区域更新为新加坡
 
 
+  deploy:
+    needs: upload-to-s3  # 部署作业依赖于 upload-to-s3 完成
+    runs-on: ubuntu-latest
+    environment: production  # 设置GitHub Action的环境为 production
+
+    steps:
+      - name: Deploy to EC2 via CodeDeploy
+        run: |
+          aws deploy create-deployment \
+            --application-name LetCode \
+            --deployment-group-name LetCodeBackEndServ \
+            --s3-location bucket=letcodefrontend,bundleType=zip,key=LetCode.zip
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ap-southeast-1  # 将区域更新为新加坡
