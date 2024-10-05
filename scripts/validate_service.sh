@@ -1,5 +1,7 @@
-#!/bin/bash
-# 健康检查，确认应用程序在指定端口上运行
+# validate_service.sh
+echo "Waiting for Spring application to start..."
+sleep 20  # 等待 20 秒，确保 Spring 完全启动
+
 if curl -f http://localhost:8101/api/health; then
   echo "Application is running."
   exit 0
