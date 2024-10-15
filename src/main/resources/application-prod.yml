@@ -11,12 +11,12 @@ spring:
     password: NusTeam15
   # Redis 配置
   # todo 需替换配置
-#  redis:
-#    database: 1
-#    host: localhost
-#    port: 6379
-#    timeout: 5000
-#    password: 123456
+  redis:
+    database: 1
+    host: 10.0.159.34
+    port: 6379
+    timeout: 5000
+    password: 123456
   # Elasticsearch 配置
   # todo 需替换配置
 #  elasticsearch:

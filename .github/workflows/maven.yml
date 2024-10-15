@@ -1,4 +1,4 @@
-name: Java CI with Maven, MySQL Setup, and Snyk Check
+name: Java CI with Maven, MySQL, Redis Setup, and Snyk Check
 
 on:
   push:
@@ -61,6 +61,23 @@ jobs:
       # 执行 SQL 文件
       - name: Execute SQL file
         run: mysql -h 127.0.0.1 -u root letcode < ${{ github.workspace }}/sql/create_table.sql
+
+      # 设置 Redis 实例
+      - name: Set up Redis
+        run: |
+          docker run -d \
+          -p 6379:6379 \
+          --name redis \
+          -e REDIS_PASSWORD=123456 \
+          redis redis-server --requirepass 123456
+
+      # 确保 Redis 启动成功
+      - name: Wait for Redis to start
+        run: sleep 10
+
+      # 验证 Redis 连接
+      - name: Verify Redis connection
+        run: redis-cli -h 127.0.0.1 -p 6379 -a 123456 ping
 
       # 确保 Maven Wrapper 有执行权限
       - name: Add execution permissions for Maven wrapper
