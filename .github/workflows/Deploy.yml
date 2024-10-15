@@ -52,12 +52,36 @@ jobs:
       - name: Execute SQL file
         run: mysql -h 127.0.0.1 -u root letcode < ${{ github.workspace }}/sql/create_table.sql
 
+      # 设置 Redis 实例，端口为 6379，密码为 123456
+      - name: Set up Redis
+        run: |
+          docker run -d \
+          -p 6379:6379 \
+          --name redis \
+          -e REDIS_PASSWORD=123456 \
+          redis redis-server --requirepass 123456
+
+      # 增加等待时间，确保 Redis 启动
+      - name: Wait for Redis to start
+        run: sleep 10
+
+      # 安装 Redis CLI
+      - name: Install Redis CLI
+        run: sudo apt-get update && sudo apt-get install -y redis-tools
+
+      # 验证 Redis 连接
+      - name: Verify Redis connection
+        run: redis-cli -h 127.0.0.1 -p 6379 -a 123456 ping
+
+      # 使用 Maven 构建项目
       - name: Build with Maven
         run: mvn clean package
 
+      # 打包应用为 ZIP 文件
       - name: Zip artifacts
         run: zip -r LetCode.zip target/ appspec.yml scripts/
 
+      # 上传到 S3
       - name: Upload to S3
         run: aws s3 cp LetCode.zip s3://letcodefrontend/LetCode.zip
         env:
@@ -69,7 +93,7 @@ jobs:
   deploy:
     needs: upload-to-s3  # 部署作业依赖于 upload-to-s3 完成
     runs-on: ubuntu-latest
-    environment: production  # 设置GitHub Action的环境为 production
+    environment: production  # 设置 GitHub Action 的环境为 production
 
     steps:
       - name: Deploy to EC2 via CodeDeploy
