@@ -71,6 +71,10 @@ jobs:
           -e REDIS_PASSWORD=123456 \
           redis redis-server --requirepass 123456
 
+      # 安装 Redis CLI
+      - name: Install Redis CLI
+        run: sudo apt-get update && sudo apt-get install -y redis-tools
+
       # 确保 Redis 启动成功
       - name: Wait for Redis to start
         run: sleep 10
