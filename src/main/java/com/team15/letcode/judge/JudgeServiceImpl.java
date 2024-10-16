@@ -5,6 +5,7 @@ import com.team15.letcode.common.ErrorCode;
 import com.team15.letcode.exception.BusinessException;
 import com.team15.letcode.judge.codesandbox.CodeSandbox;
 import com.team15.letcode.judge.codesandbox.impl.ExampleCodeSandbox;
+import com.team15.letcode.judge.codesandbox.impl.JavaNativeCodeSandbox;
 import com.team15.letcode.judge.codesandbox.model.ExecuteCodeRequest;
 import com.team15.letcode.judge.codesandbox.model.ExecuteCodeResponse;
 import com.team15.letcode.judge.strategy.JudgeContext;
@@ -64,7 +65,7 @@ public class JudgeServiceImpl implements JudgeService {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "题目状态更新错误1");
         }
         // 4）调用沙箱，获取到执行结果
-        CodeSandbox codeSandbox = new ExampleCodeSandbox();
+        CodeSandbox codeSandbox = new JavaNativeCodeSandbox();
         String language = questionSubmit.getLanguage();
         String code = questionSubmit.getCode();
         // 获取输入用例
