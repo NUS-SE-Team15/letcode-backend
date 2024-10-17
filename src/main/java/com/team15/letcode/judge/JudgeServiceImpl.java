@@ -5,6 +5,7 @@ import com.team15.letcode.common.ErrorCode;
 import com.team15.letcode.exception.BusinessException;
 import com.team15.letcode.judge.codesandbox.CodeSandbox;
 import com.team15.letcode.judge.codesandbox.impl.ExampleCodeSandbox;
+import com.team15.letcode.judge.codesandbox.impl.JavaNativeCodeSandbox;
 import com.team15.letcode.judge.codesandbox.model.ExecuteCodeRequest;
 import com.team15.letcode.judge.codesandbox.model.ExecuteCodeResponse;
 import com.team15.letcode.judge.strategy.JudgeContext;
@@ -46,7 +47,7 @@ public class JudgeServiceImpl implements JudgeService {
         if (questionSubmit == null) {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR, "提交信息不存在");
         }
-        Long questionId = questionSubmit.getQuestionId();
+        Long questionId = questionSubmit.getQuestionId();//null
         Question question = questionService.getById(questionId);
         if (question == null) {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR, "题目不存在");
@@ -61,10 +62,10 @@ public class JudgeServiceImpl implements JudgeService {
         questionSubmitUpdate.setStatus(QuestionSubmitStatusEnum.RUNNING.getValue());
         boolean update = questionSubmitService.updateById(questionSubmitUpdate);
         if (!update) {
-            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "题目状态更新错误");
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "题目状态更新错误1");
         }
         // 4）调用沙箱，获取到执行结果
-        CodeSandbox codeSandbox = new ExampleCodeSandbox();
+        CodeSandbox codeSandbox = new JavaNativeCodeSandbox();
         String language = questionSubmit.getLanguage();
         String code = questionSubmit.getCode();
         // 获取输入用例
@@ -94,7 +95,7 @@ public class JudgeServiceImpl implements JudgeService {
         questionSubmitUpdate.setJudgeInfo(JSONUtil.toJsonStr(judgeInfo));
         update = questionSubmitService.updateById(questionSubmitUpdate);
         if (!update) {
-            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "题目状态更新错误");
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "题目状态更新错误2");
         }
         QuestionSubmit questionSubmitResult = questionSubmitService.getById(questionId);
         return questionSubmitResult;

@@ -1,38 +1,28 @@
-name: Java CI with Maven, MySQL, Redis Setup, and Snyk Check
+name: Deploy to EC2 via CodeDeploy
 
 on:
   push:
     branches:
-      - "main"
+      - "main"  # 可以替换为您需要触发的分支
       - "CICD-PIPELINE"
-  pull_request:
-    branches:
-      - "main"
-
-defaults:
-  run:
-    shell: bash
-    working-directory: .
+  workflow_dispatch:
 
 jobs:
-  build:
+  upload-to-s3:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4  # 检出代码
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 8
+        uses: actions/setup-java@v1
+        with:
+          java-version: '8'
 
       # 关闭默认的 MySQL 服务（如果存在）
       - name: Shutdown system MySQL service (if running)
         run: sudo service mysql stop
-
-      # 设置 JDK 8 环境
-      - name: Set up JDK 8
-        uses: actions/setup-java@v4
-        with:
-          java-version: '8'
-          distribution: 'temurin'
-          cache: maven
 
       # 设置 MySQL 实例，确保端口映射正确
       - name: Set up MySQL
@@ -62,7 +52,7 @@ jobs:
       - name: Execute SQL file
         run: mysql -h 127.0.0.1 -u root letcode < ${{ github.workspace }}/sql/create_table.sql
 
-      # 设置 Redis 实例
+      # 设置 Redis 实例，端口为 6379，密码为 123456
       - name: Set up Redis
         run: |
           docker run -d \
@@ -71,31 +61,48 @@ jobs:
           -e REDIS_PASSWORD=123456 \
           redis redis-server --requirepass 123456
 
+      # 增加等待时间，确保 Redis 启动
+      - name: Wait for Redis to start
+        run: sleep 10
+
       # 安装 Redis CLI
       - name: Install Redis CLI
         run: sudo apt-get update && sudo apt-get install -y redis-tools
-
-      # 确保 Redis 启动成功
-      - name: Wait for Redis to start
-        run: sleep 10
 
       # 验证 Redis 连接
       - name: Verify Redis connection
         run: redis-cli -h 127.0.0.1 -p 6379 -a 123456 ping
 
-      # 确保 Maven Wrapper 有执行权限
-      - name: Add execution permissions for Maven wrapper
-        run: chmod +x ./mvnw
-
       # 使用 Maven 构建项目
       - name: Build with Maven
-        run: ./mvnw -B package --file pom.xml
+        run: mvn clean package
 
-      # 使用 Snyk 检查依赖漏洞
-      - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/maven@master
-        continue-on-error: true  # 即使 Snyk 检查失败，仍继续执行后续步骤
-        with:
-          args: test  # 指定 Snyk 运行命令
+      # 打包应用为 ZIP 文件
+      - name: Zip artifacts
+        run: zip -r LetCode.zip target/ appspec.yml scripts/
+
+      # 上传到 S3
+      - name: Upload to S3
+        run: aws s3 cp LetCode.zip s3://letcodefrontend/LetCode.zip
         env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}  # 从 GitHub Secrets 中获取 Snyk API Token
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ap-southeast-1  # 将区域更新为新加坡
+
+
+  deploy:
+    needs: upload-to-s3  # 部署作业依赖于 upload-to-s3 完成
+    runs-on: ubuntu-latest
+    environment: production  # 设置 GitHub Action 的环境为 production
+
+    steps:
+      - name: Deploy to EC2 via CodeDeploy
+        run: |
+          aws deploy create-deployment \
+            --application-name LetCode \
+            --deployment-group-name LetCodeBackEndServers \
+            --s3-location bucket=letcodefrontend,bundleType=zip,key=LetCode.zip
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ap-southeast-1  # 将区域更新为新加坡
