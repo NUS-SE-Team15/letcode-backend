@@ -15,8 +15,6 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-// todo 取消注释开启 ES（须先配置 ES）
-//@Document(indexName = "post")
 @Data
 public class PostEsDTO implements Serializable {
 
@@ -59,6 +57,11 @@ public class PostEsDTO implements Serializable {
     private Long userId;
 
     /**
+     * 题目 id
+     */
+    private Long questionId;  // 新增字段，用于关联题目ID
+
+    /**
      * 创建时间
      */
     @Field(index = false, store = true, type = FieldType.Date, format = {}, pattern = DATE_TIME_PATTERN)
@@ -93,6 +96,7 @@ public class PostEsDTO implements Serializable {
         if (StringUtils.isNotBlank(tagsStr)) {
             postEsDTO.setTags(JSONUtil.toList(tagsStr, String.class));
         }
+        postEsDTO.setQuestionId(post.getQuestionId());  // 设置 questionId
         return postEsDTO;
     }
 
@@ -112,6 +116,7 @@ public class PostEsDTO implements Serializable {
         if (CollUtil.isNotEmpty(tagList)) {
             post.setTags(JSONUtil.toJsonStr(tagList));
         }
+        post.setQuestionId(postEsDTO.getQuestionId());  // 设置 questionId
         return post;
     }
 }

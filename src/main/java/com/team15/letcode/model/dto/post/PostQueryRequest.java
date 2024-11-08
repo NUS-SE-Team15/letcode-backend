@@ -11,12 +11,12 @@ import lombok.EqualsAndHashCode;
 public class PostQueryRequest extends PageRequest implements Serializable {
 
     /**
-     * id
+     * 帖子 id
      */
     private Long id;
 
     /**
-     * id
+     * 排除的帖子 id
      */
     private Long notId;
 
@@ -54,6 +54,11 @@ public class PostQueryRequest extends PageRequest implements Serializable {
      * 收藏用户 id
      */
     private Long favourUserId;
+
+    /**
+     * 题目 id
+     */
+    private Long questionId;  // 新增字段，用于按题目 ID 过滤帖子
 
     private static final long serialVersionUID = 1L;
 }

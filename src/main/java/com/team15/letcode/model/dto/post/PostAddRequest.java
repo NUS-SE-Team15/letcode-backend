@@ -22,5 +22,10 @@ public class PostAddRequest implements Serializable {
      */
     private List<String> tags;
 
+    /**
+     * 题目 ID
+     */
+    private Long questionId;  // 新增字段，用于关联题目
+
     private static final long serialVersionUID = 1L;
 }

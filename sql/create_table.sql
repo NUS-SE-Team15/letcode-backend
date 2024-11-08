@@ -70,10 +70,12 @@ create table if not exists post
     thumbNum   int      default 0                 not null comment '点赞数',
     favourNum  int      default 0                 not null comment '收藏数',
     userId     bigint                             not null comment '创建用户 id',
+    questionId bigint                             not null comment '题目 id',
     createTime datetime default CURRENT_TIMESTAMP not null comment '创建时间',
     updateTime datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
     isDelete   tinyint  default 0                 not null comment '是否删除',
-    index idx_userId (userId)
+    index idx_userId (userId),
+    index idx_questionId (questionId)  -- 为 question_id 添加索引（可选）
 ) comment '帖子' collate = utf8mb4_unicode_ci;
 
 -- 帖子点赞表（硬删除）
@@ -99,3 +101,9 @@ create table if not exists post_favour
     index idx_postId (postId),
     index idx_userId (userId)
 ) comment '帖子收藏';
+
+
+
+
+
+
