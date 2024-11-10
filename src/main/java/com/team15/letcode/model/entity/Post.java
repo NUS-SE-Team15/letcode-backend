@@ -50,6 +50,11 @@ public class Post implements Serializable {
     private Long userId;
 
     /**
+     * 题目 id
+     */
+    private Long questionId;
+
+    /**
      * 创建时间
      */
     private Date createTime;

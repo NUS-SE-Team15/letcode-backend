@@ -42,6 +42,11 @@ public class PostVO implements Serializable {
     private Long userId;
 
     /**
+     * 题目 id
+     */
+    private Long questionId;  // 新增字段，用于前端显示帖子关联的题目ID
+
+    /**
      * 创建时间
      */
     private Date createTime;
@@ -85,6 +90,7 @@ public class PostVO implements Serializable {
         BeanUtils.copyProperties(postVO, post);
         List<String> tagList = postVO.getTagList();
         post.setTags(JSONUtil.toJsonStr(tagList));
+        post.setQuestionId(postVO.getQuestionId());  // 设置 questionId
         return post;
     }
 
@@ -101,6 +107,7 @@ public class PostVO implements Serializable {
         PostVO postVO = new PostVO();
         BeanUtils.copyProperties(post, postVO);
         postVO.setTagList(JSONUtil.toList(post.getTags(), String.class));
+        postVO.setQuestionId(post.getQuestionId());  // 设置 questionId
         return postVO;
     }
 }

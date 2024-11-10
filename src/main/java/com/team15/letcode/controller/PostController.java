@@ -66,10 +66,14 @@ public class PostController {
             post.setTags(GSON.toJson(tags));
         }
         postService.validPost(post, true);
+        // 获取登录用户信息并设置 userId
         User loginUser = userService.getLoginUser(request);
         post.setUserId(loginUser.getId());
         post.setFavourNum(0);
         post.setThumbNum(0);
+        // 设置 questionId
+        post.setQuestionId(postAddRequest.getQuestionId());
+        // 保存帖子
         boolean result = postService.save(post);
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
         long newPostId = post.getId();
@@ -172,7 +176,7 @@ public class PostController {
      */
     @PostMapping("/list/page/vo")
     public BaseResponse<Page<PostVO>> listPostVOByPage(@RequestBody PostQueryRequest postQueryRequest,
-            HttpServletRequest request) {
+                                                       HttpServletRequest request) {
         long current = postQueryRequest.getCurrent();
         long size = postQueryRequest.getPageSize();
         // 限制爬虫
@@ -247,7 +251,6 @@ public class PostController {
         postService.validPost(post, false);
         User loginUser = userService.getLoginUser(request);
         long id = postEditRequest.getId();
-        // 判断是否存在
         Post oldPost = postService.getById(id);
         ThrowUtils.throwIf(oldPost == null, ErrorCode.NOT_FOUND_ERROR);
         // 仅本人或管理员可编辑
